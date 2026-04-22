@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+  background: #f6f2e8;
+}
+
+body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.label {
+  @apply font-mono text-[10.5px] tracking-widest2 uppercase text-muted;
+}
+
+.hairline {
+  border-color: #dcd6c5;
+}
+
+.card {
+  @apply border border-rule rounded-sm px-5 py-4 bg-paper;
+}
+
+/* subtle paper grain */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+  z-index: 0;
+  opacity: 0.6;
+}
