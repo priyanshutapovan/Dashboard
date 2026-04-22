@@ -7,16 +7,12 @@ function generateMockRevenue() {
   for (let i = 89; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(today.getDate() - i)
-    const dateStr = date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short'
-    })
+    const dateStr = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
     const n = 89 - i
     const trend = 18 + n * 0.3
     const cycle = Math.sin(n / 3) * 4
     const noise = Math.sin(n * 7.13) * 2
-    const value = Math.round((trend + cycle + noise) * 10) / 10
-    data.push({ date: dateStr, value })
+    data.push({ date: dateStr, value: Math.round((trend + cycle + noise) * 10) / 10 })
   }
   return data
 }
@@ -48,22 +44,10 @@ const mock = {
     { sku: 'Coriander seed', margin_pct: 8.1 }
   ],
   dispatches: [
-    {
-      ti: 'TI82', buyer: 'ATC', ref: 'lot 59', origin: 'MUN', dest: 'DXB', line: 'Maersk',
-      container: 'MSKU7723451', vessel: 'Maersk Halifax', eta: '02 May', status: 'Loaded', value: 6230000
-    },
-    {
-      ti: 'TI83', buyer: 'VDYAS', ref: '219', origin: 'MUN', dest: 'HAM', line: 'MSC',
-      container: 'MEDU8821094', vessel: 'MSC Oscar', eta: '18 May', status: 'In transit to port', value: 8950000
-    },
-    {
-      ti: 'TI84', buyer: 'IRELAND', ref: '18', origin: 'MUN', dest: 'DUB', line: 'Hapag',
-      container: 'HLXU4490127', vessel: 'Hapag Brussels', eta: '14 May', status: 'Customs cleared', value: 4720000
-    },
-    {
-      ti: 'TI85', buyer: 'DASHMESH', ref: '21', origin: 'MUN', dest: 'LGB', line: 'ONE Line',
-      container: 'ONEU6612847', vessel: 'ONE Innovation', eta: '22 May', status: 'Loaded', value: 5280000
-    }
+    { ti: 'TI82', buyer: 'ATC', ref: 'lot 59', origin: 'MUN', dest: 'DXB', line: 'Maersk', container: 'MSKU7723451', vessel: 'Maersk Halifax', eta: '02 May', status: 'Loaded', value: 6230000 },
+    { ti: 'TI83', buyer: 'VDYAS', ref: '219', origin: 'MUN', dest: 'HAM', line: 'MSC', container: 'MEDU8821094', vessel: 'MSC Oscar', eta: '18 May', status: 'In transit to port', value: 8950000 },
+    { ti: 'TI84', buyer: 'IRELAND', ref: '18', origin: 'MUN', dest: 'DUB', line: 'Hapag', container: 'HLXU4490127', vessel: 'Hapag Brussels', eta: '14 May', status: 'Customs cleared', value: 4720000 },
+    { ti: 'TI85', buyer: 'DASHMESH', ref: '21', origin: 'MUN', dest: 'LGB', line: 'ONE Line', container: 'ONEU6612847', vessel: 'ONE Innovation', eta: '22 May', status: 'Loaded', value: 5280000 }
   ],
   d2c_yesterday: [
     { brand: 'Bharat Bazaar', orders: 284, revenue: 312000, note: '2 stockouts', note_kind: 'warn' },
@@ -90,6 +74,23 @@ const mock = {
     { order_id: 'TPV-26-046', buyer: 'Bharat Bazaar', sku: 'Chilli Teja S17', quantity: 8000, unit: 'kg', value_inr: 5600000, promised: '30 Apr', status: 'Ready' },
     { order_id: 'TPV-26-047', buyer: 'Saffron Co', sku: 'Pusa basmati', quantity: 1500, unit: 'bags', value_inr: 8400000, promised: '02 May', status: 'Production' },
     { order_id: 'TPV-26-048', buyer: 'Little India', sku: 'Mixed spices · 200g', quantity: 35000, unit: 'cases', value_inr: 9550000, promised: '05 May', status: 'QC' }
+  ],
+  carrier_tracking: [
+    { name: 'Maersk', code: 'MAEU', tracked: 12, total: 12, last_sync: '08:15', next_run: '12:00', status: 'success', note: null },
+    { name: 'MSC', code: 'MEDU', tracked: 8, total: 8, last_sync: '08:14', next_run: '12:00', status: 'success', note: null },
+    { name: 'Hapag-Lloyd', code: 'HLCU', tracked: 4, total: 5, last_sync: '08:13', next_run: '12:00', status: 'partial', note: 'HLXU8829011 not found in carrier API' },
+    { name: 'ONE Line', code: 'ONEY', tracked: 3, total: 3, last_sync: '07:32', next_run: '12:00', status: 'stale', note: 'Last sync >30 min ago' },
+    { name: 'CMA CGM', code: 'CMAU', tracked: 0, total: 2, last_sync: null, next_run: null, status: 'inactive', note: 'No active n8n workflow' }
+  ],
+  tracking_events: [
+    { time: '08:15', ti: 'TI82', container: 'MSKU7723451', carrier: 'Maersk', event: 'Vessel departed Mundra' },
+    { time: '08:14', ti: 'TI83', container: 'MEDU8821094', carrier: 'MSC', event: 'Container loaded onto vessel' },
+    { time: '08:13', ti: 'TI84', container: 'HLXU4490127', carrier: 'Hapag-Lloyd', event: 'Customs cleared' },
+    { time: '07:48', ti: 'TI78', container: 'MSKU2891124', carrier: 'Maersk', event: 'Arrived at Jebel Ali' },
+    { time: '07:32', ti: 'TI85', container: 'ONEU6612847', carrier: 'ONE Line', event: 'Loaded onto vessel' },
+    { time: '06:55', ti: 'TI80', container: 'MEDU3318277', carrier: 'MSC', event: 'In transit, Suez approach' },
+    { time: '06:14', ti: 'TI79', container: 'HLXU2204538', carrier: 'Hapag-Lloyd', event: 'Departed Hamburg' },
+    { time: '05:42', ti: 'TI77', container: 'MSKU8847221', carrier: 'Maersk', event: 'Discharged at Singapore' }
   ]
 }
 
@@ -106,7 +107,7 @@ export function useDashboardData() {
       try {
         const [
           kpisRes, alertsRes, revRes, skuRes, dispRes, d2cRes,
-          cashRes, recvRes, ordRes
+          cashRes, recvRes, ordRes, carriersRes, eventsRes
         ] = await Promise.all([
           supabase.from('v_dashboard_kpis').select('*').single(),
           supabase.from('v_dashboard_alerts').select('*').eq('active', true),
@@ -116,7 +117,9 @@ export function useDashboardData() {
           supabase.from('v_d2c_yesterday').select('*'),
           supabase.from('v_cash_breakdown').select('*'),
           supabase.from('v_receivables_detail').select('*'),
-          supabase.from('v_orders_unshipped').select('*')
+          supabase.from('v_orders_unshipped').select('*'),
+          supabase.from('v_carrier_tracking').select('*'),
+          supabase.from('v_tracking_events').select('*')
         ])
 
         if (cancelled) return
@@ -130,7 +133,9 @@ export function useDashboardData() {
           d2c_yesterday: d2cRes.data ?? mock.d2c_yesterday,
           cash_breakdown: cashRes.data ?? mock.cash_breakdown,
           receivables_detail: recvRes.data ?? mock.receivables_detail,
-          orders_unshipped: ordRes.data ?? mock.orders_unshipped
+          orders_unshipped: ordRes.data ?? mock.orders_unshipped,
+          carrier_tracking: carriersRes.data ?? mock.carrier_tracking,
+          tracking_events: eventsRes.data ?? mock.tracking_events
         })
       } catch (e) {
         if (!cancelled) setError(e)
